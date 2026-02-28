@@ -1,6 +1,6 @@
 import requests
 
-BASE_URL = "http://localhost:8000/api"
+BASE_URL = "https://workflowiq-hw99.onrender.com/"
 
 
 # ── Auth ──────────────────────────────────────────────────────────────────────

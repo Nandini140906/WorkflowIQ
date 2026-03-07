@@ -7,7 +7,7 @@ import crud
 
 router=APIRouter()
 @router.post("/workflows",response_model=schemas.WorkflowResponse,status_code=status.HTTP_201_CREATED)
-def create_workflow(workflow:schemas.WorkflowCreate,user_id:int,workflow_id:int,db:Session=Depends(get_db)):
+def create_workflow(workflow:schemas.WorkflowCreate,user_id:int,db:Session=Depends(get_db)):
     #create new workflow
     new_workflow=crud.create_workflow(db,workflow,user_id)
     return new_workflow

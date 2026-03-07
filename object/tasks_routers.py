@@ -49,7 +49,7 @@ def update_task(task_id:int,task_update:schemas.TaskUpdate,user_id:int=Query(...
 @router.delete("/tasks/{task_id}",status_code=status.HTTP_204_NO_CONTENT)
 def delete_task(task_id:int,user_id:int=Query(...),db:Session=Depends(get_db)):
     #Delete Task
-    deleted_task=crud.delete_task(db,user_id,task_id)
+    deleted_task=crud.delete_task(db,task_id,user_id)
     if not deleted_task:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

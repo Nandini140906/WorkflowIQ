@@ -9,11 +9,12 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import Optional
 import hashlib
+import os
 # Password hashing configuration
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # JWT configuration
-SECRET_KEY = "your-secret-key-change-this-in-production-use-openssl-rand-hex-32"
+SECRET_KEY =os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60  # 60 minutes
 

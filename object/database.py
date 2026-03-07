@@ -10,8 +10,9 @@ local_session=sessionmaker(autocommit=False,autoflush=False,bind=engine)
 
 Base=declarative_base()
 
-db=local_session()
+
 def get_db():
+    db=local_session()
     try:
         yield db
     finally:

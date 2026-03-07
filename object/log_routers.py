@@ -30,7 +30,7 @@ def get_logs_by_tasks(task_id:int,user_id:int,db:Session=Depends(get_db)):
 @router.put("/logs/{log_id}",response_model=schemas.ProductivityLogResponse)
 def update_log(log_id:int,user_id:int,log_update:schemas.ProductivityLogUpdate,db:Session=Depends(get_db)):
     updated_log=crud.update_log(db,user_id,log_id,log_update)
-    if not update_log:
+    if not updated_log:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="NOT FOUND"

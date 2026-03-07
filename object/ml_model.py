@@ -47,21 +47,21 @@ class TaskPriorityPredictor:
         if isinstance(deadline, datetime):
             deadline = deadline.date()
 
-            days_remaining=(deadline-date.today()).days
+        days_remaining=(deadline-date.today()).days
 
-            if days_remaining <=0:
-                return 4 #high urgency
+        if days_remaining <=0:
+            return 4 #high urgency
         #deadline may be today or overdue if return negative
-            elif days_remaining == 1:
-                return 3 #urgent but deadline is tommorow
-            elif days_remaining <= 7:
-                return 2 
+        elif days_remaining == 1:
+            return 3 #urgent but deadline is tommorow
+        elif days_remaining <= 7:
+            return 2 
         #high priority,deadline will be this week
-            elif days_remaining <= 30:
-                return 1
+        elif days_remaining <= 30:
+            return 1
             #low priority,deadline will be until this month
-            else:
-                return 0
+        else:
+            return 0
             #low urgency
 
     def category_to_importance(self,category:str)->int:
@@ -83,7 +83,7 @@ class TaskPriorityPredictor:
             deadline:Optional[date],
             category:str
         ) ->tuple[str,float]:
-        if self.model or self.vectorizer is None:
+        if self.model is None or self.vectorizer is None:
             return self._rule_based_prediction(title,deadline,category),0.5
             #will return high,urgent,low with 50% confidence
 

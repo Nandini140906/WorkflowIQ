@@ -56,7 +56,7 @@ def create_task(db:Session,task:schemas.TaskCreate,user_id:int,priority:str=None
 
 def update_task(db:Session,task_id:int,user_id:int,task_update:schemas.TaskUpdate):
     #UPDATE tasks only required fields
-    db_task=get_task(db,user_id,task_id)
+    db_task=get_task(db,task_id,user_id)
     if not db_task:
         return None
     update_task=task_update.dict(exclude_unset=True)
@@ -69,7 +69,7 @@ def update_task(db:Session,task_id:int,user_id:int,task_update:schemas.TaskUpdat
 
 def delete_task(db:Session,task_id:int,user_id:int):
     #delete task
-    db_task=get_task(db,user_id,task_id)
+    db_task=get_task(db,task_id,user_id)
     if not db_task:
         return None
     db.delete(db_task)
@@ -79,7 +79,7 @@ def delete_task(db:Session,task_id:int,user_id:int):
 #Workflow CRUD Operations    
 def get_workflows(db:Session,user_id:int):
     #get all workflows for a user
-    return db.query(model.workflows).filter(
+    return db.query(model.Workflow).filter(
         model.Workflow.user_id==user_id
     ).all()
 
@@ -102,11 +102,11 @@ def create_workflow(db:Session,workflow:schemas.WorkflowCreate,user_id:int):
     return db_workflow
 
 def update_workflow(db:Session,workflow_update:schemas.WorkflowUpdate,user_id:int,workflow_id:int):
-    db_update=get_workflow(db,workflow_id,user_id)
+    db_update=get_workflow(db,user_id,workflow_id)
     if not db_update:
         return None
     
-    update_data=update_workflow.dict(exclude_unset=True)
+    update_data=workflow_update.dict(exclude_unset=True)
     for key,values in update_data.items():
         setattr(db_update,key,values)
 
@@ -122,7 +122,7 @@ def delete_workflow(db:Session,workflow_id:int,user_id:int):
     
     db.delete(db_workflow)
     db.commit()
-    return db_workflow()
+    return db_workflow
 
 #Productivity log CRUD Operations
 def get_logs_by_task(db:Session,task_id:int,user_id:int):
@@ -140,7 +140,11 @@ def create_log(db:Session,log:schemas.ProductivityLogCreate,user_id:int):
     if not task:
         return None
     
-    db_log=model.ProductivityLog(**log.dict())
+    db_log=model.ProductivityLog(task_id=log.task_id,
+    hours_spent=log.hours_spent,
+    notes=log.notes,
+    date=log.date)
+
     db.add(db_log)
     db.commit()
     db.refresh(db_log)

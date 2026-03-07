@@ -19,8 +19,8 @@ app.add_middleware(CORSMiddleware,
                    allow_headers=["*"],
                    )
 
-
-# Include all routers
+router=APIRouter()
+# Include all routerskt
 app.include_router(auth_routers.router, prefix="/api", tags=["Authentication"])
 app.include_router(users_routers.router, prefix="/api", tags=["Users"])
 app.include_router(tasks_routers.router, prefix="/api", tags=["Tasks"])

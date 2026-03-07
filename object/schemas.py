@@ -72,10 +72,6 @@ class TaskResponse(TaskBase):
         from_attributes=True
     #helps pydantic to connect with SQLAlchemy
 
-class ProductivityLogResponse:
-    pass
-
-
 
 #workflow schemas
 class WorkflowBase(BaseModel):
@@ -111,9 +107,9 @@ class ProductivityLogBase(BaseModel):
 
 class ProductivityLogCreate(ProductivityLogBase):
     task_id:int
-    date:Optional[datetime]=None
     hours_spent: float = Field(..., gt=0)
     notes: Optional[str] = None
+    date:Optional[datetime]=None
     
 #if date not provided then the current date will be used
 

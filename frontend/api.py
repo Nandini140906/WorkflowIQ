@@ -1,6 +1,6 @@
 import requests
 
-BASE_URL = "https://workflowiq-hw99.onrender.com/"
+BASE_URL = "https://nandini140906-workflowiq-frontendapp-frdzcc.streamlit.app/"
 
 
 # ── Auth ──────────────────────────────────────────────────────────────────────

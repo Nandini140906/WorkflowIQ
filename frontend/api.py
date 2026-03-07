@@ -1,12 +1,12 @@
 import requests
 
-BASE_URL = "https://workflowiq-hw99.onrender.com/"
+BASE_URL = "https://workflowiq-hw99.onrender.com"
 # ── Auth ──────────────────────────────────────────────────────────────────────
 
 def signup(name, email, password):
     """POST /api/signup — body: {name, email, password}"""
     try:
-        r = requests.post(f"{BASE_URL}/signup", json={
+        r = requests.post(f"{BASE_URL}/api/signup", json={
             "name": name, "email": email, "password": password
         })
         r.raise_for_status()
@@ -17,14 +17,9 @@ def signup(name, email, password):
 
 
 def login(email, password):
-    """
-    POST /api/login — body: {email, password}
-    Returns: {access_token, token_type}
-    NOTE: backend Token schema only returns access_token + token_type.
-    user_id and name are NOT in the login response — we fetch them separately.
-    """
+    
     try:
-        r = requests.post(f"{BASE_URL}/login", json={
+        r = requests.post(f"{BASE_URL}/api/login", json={
             "email": email, "password": password
         })
         r.raise_for_status()
@@ -40,7 +35,7 @@ def get_user(user_id):
     """GET /api/user/{user_id} — returns {id, name, email, created_at}"""
     try:
         # NOTE: backend route is /user/ (singular) — users_routers.py line 8
-        r = requests.get(f"{BASE_URL}/user/{user_id}")
+        r = requests.get(f"{BASE_URL}/api/user/{user_id}")
         r.raise_for_status()
         return r.json()
     except Exception as e:
@@ -51,15 +46,9 @@ def get_user(user_id):
 # ── Tasks ─────────────────────────────────────────────────────────────────────
 
 def create_task(user_id, title, category, deadline):
-    """
-    POST /api/tasks?user_id={user_id}
-    Body: {title, category, deadline}
-    TaskCreate schema only has: title, category, deadline, workflow_id
-    description and status are NOT in TaskCreate — don't send them
-    deadline must be a datetime string e.g. "2026-03-01T00:00:00"
-    """
+    
     try:
-        r = requests.post(f"{BASE_URL}/tasks", json={
+        r = requests.post(f"{BASE_URL}/api/tasks", json={
             "title": title,
             "category": category,
             "deadline": f"{deadline}T00:00:00"  # backend expects datetime not date
@@ -74,7 +63,7 @@ def create_task(user_id, title, category, deadline):
 def get_tasks(user_id, skip=0, limit=100):
     """GET /api/tasks?user_id={user_id}&skip={skip}&limit={limit}"""
     try:
-        r = requests.get(f"{BASE_URL}/tasks", params={
+        r = requests.get(f"{BASE_URL}/api/tasks", params={
             "user_id": user_id, "skip": skip, "limit": limit
         })
         r.raise_for_status()
@@ -85,11 +74,6 @@ def get_tasks(user_id, skip=0, limit=100):
 
 
 def update_task(task_id, user_id, status=None, title=None, category=None, deadline=None, priority=None):
-    """
-    PUT /api/tasks/{task_id}?user_id={user_id}
-    Body: TaskUpdate — all fields optional: title, description, category,
-          deadline, priority, status, workflow_id
-    """
     body = {}
     if status   is not None: body["status"]   = status
     if title    is not None: body["title"]    = title
@@ -97,7 +81,7 @@ def update_task(task_id, user_id, status=None, title=None, category=None, deadli
     if deadline is not None: body["deadline"] = deadline
     if priority is not None: body["priority"] = priority
     try:
-        r = requests.put(f"{BASE_URL}/tasks/{task_id}", json=body,
+        r = requests.put(f"{BASE_URL}/api/tasks/{task_id}", json=body,
                          params={"user_id": user_id})
         r.raise_for_status()
         return r.json()
@@ -107,13 +91,9 @@ def update_task(task_id, user_id, status=None, title=None, category=None, deadli
 
 
 def delete_task(task_id, user_id):
-    """
-    DELETE /api/task/{task_id}?user_id={user_id}
-    NOTE: backend route is /task/ (singular) — tasks_routers.py line 49
-    """
     try:
         # singular /task/ — this is how the backend actually defines it
-        r = requests.delete(f"{BASE_URL}/task/{task_id}",
+        r = requests.delete(f"{BASE_URL}/api/task/{task_id}",
                             params={"user_id": user_id})
         r.raise_for_status()
         return True
@@ -125,15 +105,9 @@ def delete_task(task_id, user_id):
 # ── Workflows ─────────────────────────────────────────────────────────────────
 
 def create_workflow(user_id, name, description=""):
-    """
-    POST /api/workflow?user_id={user_id}
-    Body: WorkflowCreate — {name, description}
-    NOTE: WorkflowCreate has no steps field — backend schema doesn't support it
-    NOTE: backend route is /workflow (singular) — workflow_routers.py line 9
-    user_id passed as query param (backend signature: user_id:int)
-    """
+    
     try:
-        r = requests.post(f"{BASE_URL}/workflow", json={
+        r = requests.post(f"{BASE_URL}/api/workflow", json={
             "name": name, "description": description
         }, params={"user_id": user_id})
         r.raise_for_status()
@@ -146,7 +120,7 @@ def create_workflow(user_id, name, description=""):
 def get_workflows(user_id):
     """GET /api/workflows?user_id={user_id}"""
     try:
-        r = requests.get(f"{BASE_URL}/workflows", params={"user_id": user_id})
+        r = requests.get(f"{BASE_URL}/api/workflows", params={"user_id": user_id})
         r.raise_for_status()
         return r.json()
     except Exception as e:
@@ -155,16 +129,12 @@ def get_workflows(user_id):
 
 
 def update_workflow(workflow_id, user_id, name=None, description=None):
-    """
-    PUT /api/workflow/{workflow_id}
-    Body: WorkflowUpdate — {name, description} both optional
-    NOTE: route is /workflow/ (singular)
-    """
+    
     body = {}
     if name        is not None: body["name"]        = name
     if description is not None: body["description"] = description
     try:
-        r = requests.put(f"{BASE_URL}/workflow/{workflow_id}", json=body,
+        r = requests.put(f"{BASE_URL}/api/workflow/{workflow_id}", json=body,
                          params={"user_id": user_id})
         r.raise_for_status()
         return r.json()
@@ -179,7 +149,7 @@ def delete_workflow(workflow_id, user_id):
     NOTE: route is /workflow/ (singular)
     """
     try:
-        r = requests.delete(f"{BASE_URL}/workflow/{workflow_id}",
+        r = requests.delete(f"{BASE_URL}/api/workflow/{workflow_id}",
                             params={"user_id": user_id})
         r.raise_for_status()
         return True
@@ -191,16 +161,12 @@ def delete_workflow(workflow_id, user_id):
 # ── Productivity Logs ─────────────────────────────────────────────────────────
 
 def create_log(user_id, task_id, time_spent, date=None):
-    """
-    POST /api/logs?user_id={user_id}
-    Body: ProductivityLogCreate — {time_spent, task_id, date}
-    NOTE: field is time_spent (not hours_spent) — schemas.py line 105
-    """
+    
     body = {"task_id": task_id, "time_spent": time_spent}
     if date:
         body["date"] = date
     try:
-        r = requests.post(f"{BASE_URL}/logs", json=body,
+        r = requests.post(f"{BASE_URL}/api/logs", json=body,
                           params={"user_id": user_id})
         r.raise_for_status()
         return r.json()
@@ -212,7 +178,7 @@ def create_log(user_id, task_id, time_spent, date=None):
 def get_logs_for_task(task_id, user_id):
     """GET /api/logs/task/{task_id}?user_id={user_id}"""
     try:
-        r = requests.get(f"{BASE_URL}/logs/task/{task_id}",
+        r = requests.get(f"{BASE_URL}/api/logs/task/{task_id}",
                          params={"user_id": user_id})
         r.raise_for_status()
         return r.json()
@@ -222,12 +188,9 @@ def get_logs_for_task(task_id, user_id):
 
 
 def delete_log(log_id, user_id):
-    """
-    DELETE /api/log/{log_id}
-    NOTE: route is /log/ (singular) — log_routers.py line 40
-    """
+    
     try:
-        r = requests.delete(f"{BASE_URL}/log/{log_id}",
+        r = requests.delete(f"{BASE_URL}/api/log/{log_id}",
                             params={"user_id": user_id})
         r.raise_for_status()
         return True
@@ -239,17 +202,12 @@ def delete_log(log_id, user_id):
 # ── ML Prediction ─────────────────────────────────────────────────────────────
 
 def predict_priority(title, category, deadline=None):
-    """
-    POST /api/predict_priority  (underscore — prediction_routers.py line 7)
-    Body: {title, category, deadline}
-    Returns: {priority, confidence}
-    NOTE: no auth required
-    """
+    
     try:
         body = {"title": title, "category": category}
         if deadline:
             body["deadline"] = str(deadline)
-        r = requests.post(f"{BASE_URL}/predict_priority", json=body)
+        r = requests.post(f"{BASE_URL}/api/predict_priority", json=body)
         r.raise_for_status()
         return r.json()
     except Exception as e:

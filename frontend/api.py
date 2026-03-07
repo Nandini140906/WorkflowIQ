@@ -1,8 +1,6 @@
 import requests
 
-BASE_URL = "https://nandini140906-workflowiq-frontendapp-frdzcc.streamlit.app/"
-
-
+BASE_URL = "https://workflowiq-hw99.onrender.com/"
 # ── Auth ──────────────────────────────────────────────────────────────────────
 
 def signup(name, email, password):

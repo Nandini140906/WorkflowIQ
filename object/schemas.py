@@ -145,6 +145,9 @@ class Token(BaseModel):
     #schema for JWT token response
     access_token:str
     token_type:str='bearer'
+    user_id:int
+    name:str
+
 
 class TokenData(BaseModel):
     #schema for decoded token data

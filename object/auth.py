@@ -29,8 +29,7 @@ def hash_password(password: str) -> str:
     Returns:
         Hashed password string
     """
-    password_bytes=hashlib.sha256(password.encode()).hexdigest()
-    return pwd_context.hash(password_bytes)
+    return pwd_context.hash(password)
 
 
 def verify_password(password: str, hashed_password: str) -> bool:
@@ -44,8 +43,7 @@ def verify_password(password: str, hashed_password: str) -> bool:
     Returns:
         True if passwords match, False otherwise
     """
-    password_bytes=hashlib.sha256(password.encode()).hexdigest()
-    return pwd_context.verify(password_bytes, hashed_password)
+    return pwd_context.verify(hashed_password)
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):

@@ -30,9 +30,9 @@ with tab1:
             with st.spinner("Logging in..."):
                 result = login(email, password)
             if result:
-                st.session_state.access_token = result["access_token"]
-                st.session_state.user_id = result["user_id"]
-                st.session_state.user_name = result["name"]
+                st.session_state.access_token = result.get("access_token")
+                st.session_state.user_id = result.get("user_id")
+                st.session_state.user_name = result.get("name")
                 st.rerun()
             else:
                 st.error("Invalid email or password.")

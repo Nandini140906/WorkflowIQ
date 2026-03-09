@@ -8,55 +8,27 @@ from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import Optional
-import hashlib
 import os
 # Password hashing configuration
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# JWT configuration
-SECRET_KEY =os.getenv("SECRET_KEY")
+
+SECRET_KEY =os.getenv("SECRET_KEY","workflowiq-secret-key")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60  # 60 minutes
 
 
 def hash_password(password: str) -> str:
-    """
-    Hash a plain text password
-    
-    Args:
-        password: Plain text password from user
-    
-    Returns:
-        Hashed password string
-    """
+   
     return pwd_context.hash(password)
 
 
 def verify_password(password: str, hashed_password: str) -> bool:
-    """
-    Verify a plain text password against hashed password
     
-    Args:
-        plain_password: Password user typed
-        hashed_password: Hashed password from database
-    
-    Returns:
-        True if passwords match, False otherwise
-    """
-    return pwd_context.verify(hashed_password)
+    return pwd_context.verify(password,hashed_password)
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
-    """
-    Create JWT access token
-    
-    Args:
-        data: Dictionary to encode in token (user_id, email, etc.)
-        expires_delta: Optional custom expiration time
-    
-    Returns:
-        Encoded JWT token string
-    """
     to_encode = data.copy()
     
     if expires_delta:
@@ -70,15 +42,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 
 def decode_access_token(token: str):
-    """
-    Decode JWT token and return payload
     
-    Args:
-        token: JWT token string
-    
-    Returns:
-        Decoded payload dict if valid, None if invalid
-    """
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload

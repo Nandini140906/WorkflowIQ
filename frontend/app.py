@@ -3,6 +3,7 @@ import sys, os
 sys.path.insert(0, os.path.dirname(__file__))
 from api import login, signup, get_user
 from auth import is_logged_in, logout, get_user_name
+from jose import jwt
 
 st.set_page_config(page_title="WorkflowIQ", page_icon="⚡", layout="centered")
 
@@ -29,27 +30,24 @@ with tab1:
         else:
             with st.spinner("Logging in..."):
                 result = login(email, password)
-            if result:
-                st.session_state.access_token = result.get("access_token")
-                st.session_state.user_id = result.get("user_id")
-                st.session_state.user_name = result.get("name")
-                st.rerun()
-            else:
-                st.error("Invalid email or password.")
-                
-with tab2:
-    name        = st.text_input("Full Name", key="s_name")
-    email_su    = st.text_input("Email", key="s_email")
-    password_su = st.text_input("Password (min 8 chars)", type="password", key="s_pass")
-    if st.button("Create Account", type="primary", use_container_width=True):
-        if not name or not email_su or not password_su:
-            st.error("All fields are required.")
-        elif len(password_su) < 8:
-            st.error("Password must be at least 8 characters.")
-        else:
-            with st.spinner("Creating account..."):
-                result = signup(name, email_su, password_su)
-            if result:
-                st.success("Account created! Please log in.")
-            else:
-                st.error("Signup failed. Email may already be in use.")
+            
+
+    if result:
+        token = result.get("access_token")
+
+        # save token
+        st.session_state.access_token = token
+
+        # decode token to get user info
+        payload = jwt.decode(token, "workflowiq-secret-key", algorithms=["HS256"])
+        uid = payload.get("user_id")
+
+        st.session_state.user_id = uid
+
+        user_data = get_user(uid)
+        st.session_state.user_name = user_data.get("name", email.split("@")[0])
+
+        st.success("Logged in successfully!")
+        st.rerun()
+    else:
+        st.error("Invalid email or password.")

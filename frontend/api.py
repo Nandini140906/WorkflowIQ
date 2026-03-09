@@ -17,17 +17,27 @@ def signup(name, email, password):
 
 
 def login(email, password):
-    
     try:
-        r = requests.post(f"{BASE_URL}/api/login", json={
-            "email": email, "password": password
-        })
+        email = email.strip()
+        password = password.strip()
+
+        r = requests.post(
+            f"{BASE_URL}/api/login",
+            json={
+                "email": email,
+                "password": password
+            }
+        )
+
+        print("LOGIN STATUS:", r.status_code)
+        print("LOGIN RESPONSE:", r.text)
+
         r.raise_for_status()
         return r.json()
+
     except Exception as e:
         print(f"login error: {e}")
         return None
-
 
 # ── Users ─────────────────────────────────────────────────────────────────────
 

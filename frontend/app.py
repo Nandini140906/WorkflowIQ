@@ -32,22 +32,22 @@ with tab1:
                 result = login(email, password)
             
 
-    if result:
-        token = result.get("access_token")
+                if result:
+                    token = result.get("access_token")
 
-        # save token
-        st.session_state.access_token = token
+                    # save token
+                    st.session_state.access_token = token
 
-        # decode token to get user info
-        payload = jwt.decode(token, "workflowiq-secret-key", algorithms=["HS256"])
-        uid = payload.get("user_id")
+                    # decode token to get user info
+                    payload = jwt.decode(token, "workflowiq-secret-key", algorithms=["HS256"])
+                    uid = payload.get("user_id")
 
-        st.session_state.user_id = uid
+                    st.session_state.user_id = uid
 
-        user_data = get_user(uid)
-        st.session_state.user_name = user_data.get("name", email.split("@")[0])
+                    user_data = get_user(uid)
+                    st.session_state.user_name = user_data.get("name", email.split("@")[0])
 
-        st.success("Logged in successfully!")
-        st.rerun()
-    else:
-        st.error("Invalid email or password.")
+                    st.success("Logged in successfully!")
+                    st.rerun()
+                else:
+                    st.error("Invalid email or password.")

@@ -1,9 +1,8 @@
 import streamlit as st
 import sys, os
 sys.path.insert(0, os.path.dirname(__file__))
-from api import login, signup, get_user
+from api import login, signup
 from auth import is_logged_in, logout, get_user_name
-from jose import jwt
 
 st.set_page_config(page_title="WorkflowIQ", page_icon="⚡", layout="centered")
 
@@ -30,12 +29,30 @@ with tab1:
         else:
             with st.spinner("Logging in..."):
                 result = login(email.strip(), password.strip())
-            
+            if result:
+                st.session_state["access_token"] = result["access_token"]
+                st.session_state["user_id"] = result["user_id"]
+                st.session_state["user_name"] = result["name"]
+                st.session_state["logged_in"] = True
+                st.success("Login successful!")
+                st.rerun()
+                
+            else:
+                st.error("Invalid email or password. Please try again.")
 
-                if result:
-                    if result:
-                        st.session_state["access_token"] = result["access_token"]
-                        st.session_state["logged_in"] = True
-
-                        st.success("Login successful!")
-                        st.rerun()
+with tab2:
+    name     = st.text_input("Full Name", key="s_name")
+    email_s  = st.text_input("Email", key="s_email")
+    password_s = st.text_input("Password", type="password", key="s_pass")
+    if st.button("Sign Up", type="primary", use_container_width=True):
+        if not name or not email_s or not password_s:
+            st.error("Please fill in all fields.")
+        elif len(password_s) < 8:
+            st.error("Password must be at least 8 characters.")
+        else:
+            with st.spinner("Creating account..."):
+                result = signup(name.strip(), email_s.strip(), password_s.strip())
+            if result:
+                st.success("Account created! Please log in.")
+            else:
+                st.error("Signup failed. Email may already be registered.")

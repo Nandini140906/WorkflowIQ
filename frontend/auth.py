@@ -16,7 +16,7 @@ def get_user_id():
 
 
 def get_user_name():
-    return "User"
+    return st.session_state.get("user_name", "User") 
 
 
 def logout():

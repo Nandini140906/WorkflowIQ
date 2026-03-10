@@ -2,10 +2,7 @@ import streamlit as st
 
 
 def is_logged_in():
-    return (
-        st.session_state.get("user_id") is not None
-        and st.session_state.get("access_token") is not None
-    )
+    return st.session_state.get("logged_in",False)
 
 
 def require_login():
@@ -19,9 +16,8 @@ def get_user_id():
 
 
 def get_user_name():
-    return st.session_state.get("user_name", "User")
+    return "User"
 
 
 def logout():
-    for key in ["user_id", "access_token", "user_name"]:
-        st.session_state.pop(key, None)
+        st.session_state.clear()

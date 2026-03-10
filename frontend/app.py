@@ -33,24 +33,9 @@ with tab1:
             
 
                 if result:
-                    token = result.get("access_token")
+                    if result:
+                        st.session_state["access_token"] = result["access_token"]
+                        st.session_state["logged_in"] = True
 
-                    # save token
-                    st.session_state.access_token = token
-
-                    # decode token to get user info
-                    payload = jwt.get_unverified_claims(token)
-                    uid = payload.get("user_id")
-
-                    st.session_state.user_id = uid
-
-                    user_data = get_user(uid)
-                    if user_data:
-                        st.session_state.user_name = user_data.get("name", email.split("@")[0])
-                    else:
-                        st.session_state.user_name=email.split("@")[0]
-
-                    st.success("Logged in successfully!")
-                    st.rerun()
-                else:
-                    st.error("Invalid email or password.")
+                        st.success("Login successful!")
+                        st.rerun()

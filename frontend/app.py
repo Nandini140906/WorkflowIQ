@@ -29,7 +29,7 @@ with tab1:
             st.error("Please fill in both fields.")
         else:
             with st.spinner("Logging in..."):
-                result = login(email, password)
+                result = login(email.strip(), password.strip())
             
 
                 if result:

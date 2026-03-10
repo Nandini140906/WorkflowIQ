@@ -39,13 +39,16 @@ with tab1:
                     st.session_state.access_token = token
 
                     # decode token to get user info
-                    payload = jwt.get_unverified_claims(token, "workflowiq-secret-key", algorithms=["HS256"])
+                    payload = jwt.get_unverified_claims(token)
                     uid = payload.get("user_id")
 
                     st.session_state.user_id = uid
 
                     user_data = get_user(uid)
-                    st.session_state.user_name = user_data.get("name", email.split("@")[0])
+                    if user_data:
+                        st.session_state.user_name = user_data.get("name", email.split("@")[0])
+                    else:
+                        st.session_state.user_name=email.split("@")[0]
 
                     st.success("Logged in successfully!")
                     st.rerun()

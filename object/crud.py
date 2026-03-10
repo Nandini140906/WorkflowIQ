@@ -127,7 +127,7 @@ def delete_workflow(db:Session,workflow_id:int,user_id:int):
 #Productivity log CRUD Operations
 def get_logs_by_task(db:Session,task_id:int,user_id:int):
     #get all logs for a task
-    task=get_task(db,user_id,task_id)
+    task=get_task(db,task_id,user_id)
     if not task:
         return []
     

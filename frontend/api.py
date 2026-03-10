@@ -32,6 +32,9 @@ def login(email, password):
         print("LOGIN STATUS:", r.status_code)
         print("LOGIN RESPONSE:", r.text)
 
+        if r.status_code==200:
+            return r.json()
+
         r.raise_for_status()
         return r.json()
 

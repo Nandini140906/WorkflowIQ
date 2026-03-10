@@ -39,7 +39,7 @@ with tab1:
                     st.session_state.access_token = token
 
                     # decode token to get user info
-                    payload = jwt.decode(token, "workflowiq-secret-key", algorithms=["HS256"])
+                    payload = jwt.get_unverified_claims(token, "workflowiq-secret-key", algorithms=["HS256"])
                     uid = payload.get("user_id")
 
                     st.session_state.user_id = uid
